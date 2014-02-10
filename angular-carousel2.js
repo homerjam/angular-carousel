@@ -121,6 +121,10 @@
                                 setFramesPageId();
 
                                 flip();
+
+                                $timeout(function(){
+                                    _resize();
+                                });
                             }
 
                             // Makes sure the 'left' values of all frames are set correctly.
@@ -164,8 +168,6 @@
 
                                 snapThreshold = Math.round(viewportWidth * defaults.snapThreshold);
                             }
-
-                            _resize();
 
                             function resize() {
                                 _resize();
