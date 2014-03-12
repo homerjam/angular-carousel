@@ -10,7 +10,7 @@
 
 	<body ng-app="ExampleApp" ng-controller="ExampleCtrl">
 
-		<div ng-carousel="slide in slides" ng-carousel-options="{ onChange: 'onChangeSlide', clickSpeed: 500, keySpeed: 500 }">
+		<div ng-carousel="slide in data.slides" ng-carousel-options="{ onChange: 'onChangeSlide', clickSpeed: 500, keySpeed: 500 }">
 
 			<div class="slide" style="background-color: {{slide.color}}">
 
@@ -24,7 +24,7 @@
 
 			<li ng-click="carousel.prevPage()">&#10094;</li>
 
-			<li ng-repeat="slide in slides"
+			<li ng-repeat="slide in data.slides"
 				ng-click="carousel.goToPage($index)"
 				ng-class="{active: $index == activeSlideIndex}"
 				ng-bind="$index"></li>

@@ -3,11 +3,13 @@ angular.module('ExampleCtrl', []).controller('ExampleCtrl', ['$scope',
 
 		$scope.activeSlideIndex = 0;
 
-        $scope.slides = [];
+        $scope.data = {};
+
+        $scope.data.slides = [];
 
         for (var i = 0; i < 10; i++) {
 
-            $scope.slides[i] = {
+            $scope.data.slides[i] = {
                 text: 'Slide ' + i,
                 color: '#' + ('000000' + Math.floor(Math.random()*16777215).toString(16)).slice(-6)
             };

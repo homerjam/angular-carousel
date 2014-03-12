@@ -60,14 +60,14 @@
                                 flip();
                             };
                             scope.carousel.nextPage = function(speed) {
-                                if (scope[listIdentifier].length < 2) {
+                                if (list.length < 2) {
                                     return false;
                                 }
 
                                 flipPage('next', speed !== undefined ? speed : defaults.speed);
                             };
                             scope.carousel.prevPage = function(speed) {
-                                if (scope[listIdentifier].length < 2) {
+                                if (list.length < 2) {
                                     return false;
                                 }
 
@@ -139,15 +139,19 @@
                             }
 
                             function setFramesPageId() {
-                                frames[0].pageId = pageIndex === 0 ? scope[listIdentifier].length - 2 : pageIndex === 1 ? scope[listIdentifier].length - 1 : pageIndex - 2;
-                                frames[1].pageId = pageIndex === 0 ? scope[listIdentifier].length - 1 : pageIndex - 1;
+                                frames[0].pageId = pageIndex === 0 ? list.length - 2 : pageIndex === 1 ? list.length - 1 : pageIndex - 2;
+                                frames[1].pageId = pageIndex === 0 ? list.length - 1 : pageIndex - 1;
                                 frames[2].pageId = pageIndex;
-                                frames[3].pageId = pageIndex === scope[listIdentifier].length - 1 ? 0 : pageIndex + 1;
-                                frames[4].pageId = pageIndex === scope[listIdentifier].length - 1 ? 1 : pageIndex === scope[listIdentifier].length - 2 ? 0 : pageIndex + 2;
+                                frames[3].pageId = pageIndex === list.length - 1 ? 0 : pageIndex + 1;
+                                frames[4].pageId = pageIndex === list.length - 1 ? 1 : pageIndex === list.length - 2 ? 0 : pageIndex + 2;
                             }
+
+                            var list = [];
 
                             scope.$watch(listIdentifier, function(n) {
                                 if (n !== undefined) {
+                                    list = n;
+                                    
                                     init();
                                 }
                             });
@@ -223,7 +227,7 @@
                                 if (direction > 0) {
                                     page = forceDir ? page - 1 : -Math.ceil(sliderX / viewportWidth);
 
-                                    pageIndex = pageIndex === 0 ? scope[listIdentifier].length - 1 : pageIndex - 1;
+                                    pageIndex = pageIndex === 0 ? list.length - 1 : pageIndex - 1;
 
                                     moveFrame.apply(frames, [frames.length - 1, 0]);
 
@@ -233,7 +237,7 @@
                                 } else {
                                     page = forceDir ? page + 1 : -Math.floor(sliderX / viewportWidth);
 
-                                    pageIndex = pageIndex === scope[listIdentifier].length - 1 ? 0 : pageIndex + 1;
+                                    pageIndex = pageIndex === list.length - 1 ? 0 : pageIndex + 1;
 
                                     moveFrame.apply(frames, [0, frames.length - 1]);
 
@@ -262,7 +266,7 @@
 
                             function flip() {
                                 for (var i = 0; i < 5; i++) {
-                                    frames[i].scope[valueIdentifier] = scope[listIdentifier][frames[i].pageId];
+                                    frames[i].scope[valueIdentifier] = list[frames[i].pageId];
 
                                     if (!frames[i].scope.$$phase) {
                                         frames[i].scope.$apply();
@@ -288,7 +292,7 @@
 
                             $swipe.bind(slider, {
                                 start: function(coords) {
-                                    if (scope[listIdentifier].length < 2) {
+                                    if (list.length < 2) {
                                         return false;
                                     }
 
@@ -300,7 +304,7 @@
                                 },
 
                                 move: function(coords) {
-                                    if (scope[listIdentifier].length < 2) {
+                                    if (list.length < 2) {
                                         return false;
                                     }
 
@@ -316,7 +320,7 @@
                                 },
 
                                 end: function(coords, e) {
-                                    if (scope[listIdentifier].length < 2 || (Modernizr.touch && e.type !== 'touchend')) {
+                                    if (list.length < 2 || (Modernizr.touch && e.type !== 'touchend')) {
                                         return false;
                                     }
 
