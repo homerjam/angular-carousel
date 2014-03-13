@@ -15,7 +15,7 @@
                         return function link(scope, element, attr) {
 
                             var defaults = {
-                                onChange: '',
+                                onChange: function() {},
                                 speed: 500,
                                 clickSpeed: 500,
                                 keySpeed: 500,
@@ -59,6 +59,7 @@
 
                                 flip();
                             };
+
                             scope.carousel.nextPage = function(speed) {
                                 if (list.length < 2) {
                                     return false;
@@ -66,6 +67,7 @@
 
                                 flipPage('next', speed !== undefined ? speed : defaults.speed);
                             };
+
                             scope.carousel.prevPage = function(speed) {
                                 if (list.length < 2) {
                                     return false;
@@ -122,13 +124,12 @@
 
                                 flip();
 
-                                $timeout(function(){
+                                $timeout(function() {
                                     _resize();
                                 });
                             }
 
-                            // Makes sure the 'left' values of all frames are set correctly.
-                            function repositionFrames() {
+                            function repositionFrames() { // Makes sure the 'left' values of all frames are set correctly.
                                 page = 0;
 
                                 frames[0].element.css('left', page * 100 - 200 + '%');
@@ -151,7 +152,7 @@
                             scope.$watch(listIdentifier, function(n) {
                                 if (n !== undefined) {
                                     list = n;
-                                    
+
                                     init();
                                 }
                             });
@@ -187,8 +188,7 @@
 
                             var resetTimeout;
 
-                            // reset left/translate positions (improves resizing performance)
-                            function reset() {
+                            function reset() { // reset left/translate positions (improves resizing performance)
                                 if (direction !== undefined) {
                                     repositionFrames();
                                     moveSlider(0);
@@ -252,7 +252,7 @@
                                 var transDuration = forceDir ? speed : Math.floor(speed * Math.abs(sliderX - newX) / viewportWidth);
 
                                 if (sliderX === newX && !forceDir) {
-                                    flip(); // If we swiped /exactly/ to the next page.
+                                    flip(); // If we swiped exactly to the next page.
 
                                 } else {
                                     moveSlider(newX, transDuration);
@@ -283,11 +283,9 @@
                                     scope.$apply();
                                 }
 
-                                if (defaults.onChange !== '' && typeof(scope[defaults.onChange]) === 'function') {
-                                    $timeout(function() {
-                                        scope[defaults.onChange](pageIndex);
-                                    }, 0);
-                                }
+                                scope.carousel.currentPage = pageIndex;
+
+                                defaults.onChange(pageIndex);
                             }
 
                             $swipe.bind(slider, {
