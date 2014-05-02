@@ -15,18 +15,23 @@
                         return function link(scope, element, attr) {
 
                             var defaults = {
-                                onChange: function() {},
-                                speed: 500,
-                                clickSpeed: 500,
-                                keySpeed: 500,
-                                snapThreshold: 0.1,
-                                prevClickDisabled: false
+                                id: +new Date(), // `id` if using multiple instances
+                                speed: 500, // default transition speed
+                                clickSpeed: 500, // default transition speed on click
+                                keySpeed: 500, // default transition speed on keypress
+                                snapThreshold: 0.1, // point at which carousel goes to next/previous slide on swipe/drag
+                                prevClickDisabled: false, // optionally disable go to previous slide on click left side
+                                bindSwipe: true, // should the carousel allow touch/mouse control
+                                bindKeys: true, // should the carousel allow keyboard control
+                                startIdx: 0, // optionally start at this index in the array
+                                autoPlay: true, // should the carousel autoplay
+                                autoPlayDelay: 2000 // delay between going to next page
                             };
 
                             // Parse the values out of the attr value.
-                            var expression = attr.ngCarousel;
-                            var match = expression.match(/^\s*(.+)\s+in\s+(.*?)\s*$/);
-                            var valueIdentifier, listIdentifier;
+                            var expression = attr.ngCarousel,
+                                match = expression.match(/^\s*(.+)\s+in\s+(.*?)\s*$/),
+                                valueIdentifier, listIdentifier;
 
                             if (!match) {
                                 $log.error('Expected ngCarousel in form of "_item_ in _array_" but got "' + expression + '".');
@@ -45,39 +50,59 @@
                                 'transition': 'transitionend' // IE10, Opera, Chrome, FF 15+, Saf 7+
                             };
 
-                            var pfxTransitionEnd = transEndEventNames[Modernizr.prefixed('transition')];
-                            var pfxTransitionDuration = Modernizr.prefixed('transitionDuration');
+                            var pfxTransitionEnd = transEndEventNames[Modernizr.prefixed('transition')],
+                                pfxTransitionDuration = Modernizr.prefixed('transitionDuration');
 
-                            if (typeof(scope.carousel) !== 'object') {
-                                scope.carousel = {};
-                            }
-
-                            scope.carousel.goToPage = function(_page) {
-                                pageIndex = _page;
+                            function goTo(i) {
+                                pageIndex = parseInt(i);
 
                                 setFramesPageId();
 
                                 flip();
-                            };
+                            }
 
-                            scope.carousel.nextPage = function(speed) {
+                            function next(speed) {
                                 if (list.length < 2) {
                                     return false;
                                 }
 
                                 flipPage('next', speed !== undefined ? speed : defaults.speed);
-                            };
+                            }
 
-                            scope.carousel.prevPage = function(speed) {
+                            function prev(speed) {
                                 if (list.length < 2) {
                                     return false;
                                 }
 
                                 flipPage('prev', speed !== undefined ? speed : defaults.speed);
-                            };
+                            }
 
-                            var container = element.children();
-                            var slider = container.children();
+                            scope.$on('carousel:goTo', function(e, i, speed, id) {
+                                if (id && defaults.id !== id) {
+                                    return false;
+                                }
+
+                                goTo(i);
+                            });
+
+                            scope.$on('carousel:next', function(e, speed, id) {
+                                if (id && defaults.id !== id) {
+                                    return false;
+                                }
+
+                                next(speed);
+                            });
+
+                            scope.$on('carousel:prev', function(e, speed, id) {
+                                if (id && defaults.id !== id) {
+                                    return false;
+                                }
+
+                                prev(speed);
+                            });
+
+                            var container = element.children(),
+                                slider = container.children();
 
                             // Empty out the slider.
                             var templateFrame = slider.children();
@@ -112,8 +137,10 @@
                             // Now the frames are ready. We need to position them and prepare the first few frames.
                             // The content loading is handled by Angular, when we change the valueIdentifier value on the scope of a frame.
 
-                            var page; // The notional page in the infinite scrolling.
-                            var pageIndex = 0; // The index of that page in the array.
+                            var page, // The notional page in the infinite scrolling.
+                                pageIndex = defaults.startIdx, // The index of that page in the array.
+                                autoPlayTimeout,
+                                playing = false;
 
                             function init() {
                                 repositionFrames();
@@ -124,10 +151,61 @@
 
                                 flip();
 
+                                if (defaults.autoPlay) {
+                                    play();
+                                }
+
                                 $timeout(function() {
                                     _resize();
                                 });
                             }
+
+                            function autoPlay() {
+                                next();
+
+                                play();
+                            }
+
+                            function play() {
+                                playing = true;
+
+                                $timeout.cancel(autoPlayTimeout);
+                                autoPlayTimeout = $timeout(autoPlay, defaults.autoPlayDelay);
+                            }
+
+                            function stop() {
+                                playing = false;
+
+                                $timeout.cancel(autoPlayTimeout);
+                            }
+
+                            scope.$on('carousel:playPause', function(e, id) {
+                                if (id && defaults.id !== id) {
+                                    return false;
+                                }
+
+                                if (playing) {
+                                    stop();
+                                } else {
+                                    play();
+                                }
+                            });
+
+                            scope.$on('carousel:play', function(e, id) {
+                                if (id && defaults.id !== id) {
+                                    return false;
+                                }
+
+                                play();
+                            });
+
+                            scope.$on('carousel:stop', function(e, id) {
+                                if (id && defaults.id !== id) {
+                                    return false;
+                                }
+
+                                stop();
+                            });
 
                             function repositionFrames() { // Makes sure the 'left' values of all frames are set correctly.
                                 page = 0;
@@ -171,15 +249,15 @@
                                 scope.slideWidth = Number(parseFloat(frames[2].element.children().css('width')).toFixed(3));
                                 scope.slideHeight = Number(parseFloat(frames[2].element.children().css('height')).toFixed(3));
 
+                                if (!scope.$$phase) {
+                                    scope.$apply();
+                                }
+
                                 snapThreshold = Math.round(viewportWidth * defaults.snapThreshold);
                             }
 
                             function resize() {
                                 _resize();
-
-                                if (!scope.$$phase) {
-                                    scope.$apply();
-                                }
 
                                 slider[0].style[pfxTransitionDuration] = '0s';
 
@@ -279,74 +357,76 @@
                                     }
                                 }
 
-                                if (!scope.$$phase) {
-                                    scope.$apply();
-                                }
+                                scope.currentPage = pageIndex;
 
-                                scope.carousel.currentPage = pageIndex;
-
-                                defaults.onChange(pageIndex);
+                                scope.$broadcast('carousel:change', pageIndex, defaults.id);
                             }
 
-                            $swipe.bind(slider, {
-                                start: function(coords) {
-                                    if (list.length < 2) {
-                                        return false;
+                            if (defaults.bindSwipe) {
+                                $swipe.bind(slider, {
+                                    start: function(coords) {
+                                        if (list.length < 2) {
+                                            return false;
+                                        }
+
+                                        stop();
+
+                                        moved = false;
+                                        startX = coords.x;
+                                        pointX = coords.x;
+                                        direction = 0;
+                                        slider[0].style[pfxTransitionDuration] = '0ms';
+                                    },
+
+                                    move: function(coords) {
+                                        if (list.length < 2) {
+                                            return false;
+                                        }
+
+                                        var deltaX = coords.x - pointX;
+                                        var newX = sliderX + deltaX;
+                                        var dist = Math.abs(coords.x - startX);
+
+                                        moved = true;
+                                        pointX = coords.x;
+                                        direction = deltaX > 0 ? 1 : deltaX < 0 ? -1 : 0;
+
+                                        moveSlider(newX);
+                                    },
+
+                                    end: function(coords, e) {
+                                        if (list.length < 2 || (Modernizr.touch && e.type !== 'touchend')) {
+                                            return false;
+                                        }
+
+                                        var x = coords && coords.x || pointX;
+                                        var dist = Math.abs(x - startX);
+
+                                        if (!moved) {
+                                            flipPage(coords.x < viewportWidth * 0.5 && !defaults.prevClickDisabled ? 'prev' : 'next', defaults.clickSpeed);
+                                            return false;
+                                        }
+
+                                        if (dist < snapThreshold) {
+                                            slider[0].style[pfxTransitionDuration] = Math.floor(300 * dist / snapThreshold) + 'ms';
+                                            moveSlider(-page * viewportWidth);
+
+                                        } else {
+                                            flipPage();
+                                        }
                                     }
-
-                                    moved = false;
-                                    startX = coords.x;
-                                    pointX = coords.x;
-                                    direction = 0;
-                                    slider[0].style[pfxTransitionDuration] = '0ms';
-                                },
-
-                                move: function(coords) {
-                                    if (list.length < 2) {
-                                        return false;
-                                    }
-
-                                    var deltaX = coords.x - pointX;
-                                    var newX = sliderX + deltaX;
-                                    var dist = Math.abs(coords.x - startX);
-
-                                    moved = true;
-                                    pointX = coords.x;
-                                    direction = deltaX > 0 ? 1 : deltaX < 0 ? -1 : 0;
-
-                                    moveSlider(newX);
-                                },
-
-                                end: function(coords, e) {
-                                    if (list.length < 2 || (Modernizr.touch && e.type !== 'touchend')) {
-                                        return false;
-                                    }
-
-                                    var x = coords && coords.x || pointX;
-                                    var dist = Math.abs(x - startX);
-
-                                    if (!moved) {
-                                        flipPage(coords.x < viewportWidth * 0.5 && !defaults.prevClickDisabled ? 'prev' : 'next', defaults.clickSpeed);
-                                        return false;
-                                    }
-
-                                    if (dist < snapThreshold) {
-                                        slider[0].style[pfxTransitionDuration] = Math.floor(300 * dist / snapThreshold) + 'ms';
-                                        moveSlider(-page * viewportWidth);
-
-                                    } else {
-                                        flipPage();
-                                    }
-                                }
-                            });
+                                });
+                            }
 
                             function keyDown(e) {
                                 switch (e.keyCode) {
                                     case 37:
-                                        scope.carousel.prevPage(defaults.keySpeed);
+                                        stop();
+                                        prev(defaults.keySpeed);
                                         break;
                                     case 39:
-                                        scope.carousel.nextPage(defaults.keySpeed);
+                                        stop();
+                                        next(defaults.keySpeed);
                                         break;
                                 }
                             }
@@ -354,11 +434,17 @@
                             var resizeEvent = 'onorientationchange' in $window ? 'orientationchange' : 'resize';
 
                             angular.element($window).on(resizeEvent, resize);
-                            $document.on('keydown', keyDown);
+
+                            if (defaults.bindKeys) {
+                                $document.on('keydown', keyDown);
+                            }
 
                             scope.$on('$destroy', function() {
                                 angular.element($window).off(resizeEvent, resize);
-                                $document.off('keydown', keyDown);
+
+                                if (defaults.bindKeys) {
+                                    $document.off('keydown', keyDown);
+                                }
                             });
 
                         };

@@ -10,7 +10,7 @@
 
 	<body ng-app="ExampleApp" ng-controller="ExampleCtrl">
 
-		<div ng-carousel="slide in data.slides" ng-carousel-options="{ onChange: onChangeSlide, clickSpeed: 500, keySpeed: 500 }">
+		<div ng-carousel="slide in data.slides" ng-carousel-options="carouselOptions">
 
 			<div class="slide" style="background-color: {{slide.color}}">
 
@@ -22,14 +22,22 @@
 
 		<ul class="controls">
 
-			<li ng-click="carousel.prevPage()">&#10094;</li>
+			<li ng-click="carouselEmitter('prev')">&#10094;</li>
 
 			<li ng-repeat="slide in data.slides"
-				ng-click="carousel.goToPage($index)"
+				ng-click="carouselEmitter('goTo', $index)"
 				ng-class="{active: $index == activeSlideIndex}"
 				ng-bind="{{$index + 1}}"></li>
 
-			<li ng-click="carousel.nextPage()">&#10095;</li>
+			<li ng-click="carouselEmitter('next')">&#10095;</li>
+
+		</ul>
+
+		<ul class="controls" style="bottom: 3em;">
+
+			<li ng-click="carouselEmitter('play')">Play</li>
+
+			<li ng-click="carouselEmitter('stop')">Stop</li>			
 
 		</ul>
 
