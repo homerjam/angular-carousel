@@ -374,10 +374,6 @@
 
                                 scope.currentPage = pageIndex;
 
-                                if (!scope.$$phase) {
-                                    scope.$apply();
-                                }
-
                                 scope.$broadcast('carousel:change', pageIndex, defaults.id);
                             }
 
