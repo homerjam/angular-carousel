@@ -35,9 +35,11 @@
 
 		<ul class="controls" style="bottom: 3em;">
 
-			<li ng-click="carouselEmitter('play')">Play</li>
+			<li ng-click="carouselEmitter('playPause', true)" ng-bind="isPlaying ? 'Pause' : 'Play'"></li>
 
-			<li ng-click="carouselEmitter('stop')">Stop</li>			
+			<!-- <li ng-click="carouselEmitter('play')">Play</li> -->
+
+			<!-- <li ng-click="carouselEmitter('stop')">Stop</li> -->
 
 		</ul>
 

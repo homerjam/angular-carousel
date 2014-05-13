@@ -31,6 +31,10 @@ angular.module('ExampleCtrl', []).controller('ExampleCtrl', ['$scope',
             $scope.activeSlideIndex = i;
         });
 
+        $scope.$on('carousel:status', function(e, status) {
+            $scope.isPlaying = (status === 'playing');
+        });
+
     }
 ]);
 

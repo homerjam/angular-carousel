@@ -24,7 +24,7 @@
                                 bindSwipe: true, // should the carousel allow touch/mouse control
                                 bindKeys: true, // should the carousel allow keyboard control
                                 startIdx: 0, // optionally start at this index in the array
-                                autoPlay: true, // should the carousel autoplay
+                                autoPlay: false, // should the carousel autoplay
                                 autoPlayDelay: 2000 // delay between going to next page
                             };
 
@@ -139,8 +139,13 @@
 
                             var page, // The notional page in the infinite scrolling.
                                 pageIndex = defaults.startIdx, // The index of that page in the array.
-                                autoPlayTimeout,
-                                playing = false;
+                                autoPlayTimeout;
+
+                            scope.playing = false;
+
+                            scope.$watch('playing', function(n, o){
+                                scope.$broadcast('carousel:status', n ? 'playing' : 'stopped', defaults.id);
+                            });
 
                             function init() {
                                 repositionFrames();
@@ -166,37 +171,47 @@
                                 play();
                             }
 
-                            function play() {
-                                playing = true;
+                            function play(immediate) {
+                                immediate = immediate || false;
+
+                                scope.playing = true;
+
+                                if (immediate) {
+                                    next();
+                                }
 
                                 $timeout.cancel(autoPlayTimeout);
                                 autoPlayTimeout = $timeout(autoPlay, defaults.autoPlayDelay);
                             }
 
                             function stop() {
-                                playing = false;
+                                scope.playing = false;
 
                                 $timeout.cancel(autoPlayTimeout);
                             }
 
-                            scope.$on('carousel:playPause', function(e, id) {
+                            scope.$on('carousel:playPause', function(e, immediate, id) {
                                 if (id && defaults.id !== id) {
                                     return false;
                                 }
 
-                                if (playing) {
+                                immediate = immediate || false;
+
+                                if (scope.playing) {
                                     stop();
                                 } else {
-                                    play();
+                                    play(immediate);
                                 }
                             });
 
-                            scope.$on('carousel:play', function(e, id) {
+                            scope.$on('carousel:play', function(e, immediate, id) {
                                 if (id && defaults.id !== id) {
                                     return false;
                                 }
 
-                                play();
+                                immediate = immediate || false;
+
+                                play(immediate);
                             });
 
                             scope.$on('carousel:stop', function(e, id) {
@@ -358,6 +373,10 @@
                                 }
 
                                 scope.currentPage = pageIndex;
+
+                                if (!scope.$$phase) {
+                                    scope.$apply();
+                                }
 
                                 scope.$broadcast('carousel:change', pageIndex, defaults.id);
                             }
