@@ -19,8 +19,9 @@
                                 speed: 500, // default transition speed
                                 clickSpeed: 500, // default transition speed on click
                                 keySpeed: 500, // default transition speed on keypress
+                                timingFunction: 'cubic-bezier(0.4,1,0.85,1)', // timing function for slide transitions
                                 snapThreshold: 0.1, // point at which carousel goes to next/previous slide on swipe/drag
-                                prevClickDisabled: false, // optionally disable go to previous slide on click left side
+                                prevClickEnabled: false, // optionally enable go to previous slide on click left side
                                 bindSwipe: true, // should the carousel allow touch/mouse control
                                 bindKeys: true, // should the carousel allow keyboard control
                                 startIdx: 0, // optionally start at this index in the array
@@ -51,7 +52,8 @@
                             };
 
                             var pfxTransitionEnd = transEndEventNames[Modernizr.prefixed('transition')],
-                                pfxTransitionDuration = Modernizr.prefixed('transitionDuration');
+                                pfxTransitionDuration = Modernizr.prefixed('transitionDuration'),
+                                pfxTransitionTimingFunction = Modernizr.prefixed('transitionTimingFunction');
 
                             function goTo(i) {
                                 pageIndex = parseInt(i);
@@ -298,6 +300,7 @@
                                 sliderX = x;
                                 slider[0].style[Modernizr.prefixed('transform')] = 'translate(' + x + 'px, 0)';
                                 slider[0].style[pfxTransitionDuration] = transDuration + 'ms';
+                                slider[0].style[pfxTransitionTimingFunction] = defaults.timingFunction;
                             }
 
                             function flipPage(forceDir, speed) {
@@ -418,7 +421,7 @@
                                         var dist = Math.abs(x - startX);
 
                                         if (!moved) {
-                                            flipPage(coords.x < viewportWidth * 0.5 && !defaults.prevClickDisabled ? 'prev' : 'next', defaults.clickSpeed);
+                                            flipPage(coords.x < viewportWidth * 0.5 && defaults.prevClickEnabled ? 'prev' : 'next', defaults.clickSpeed);
                                             return false;
                                         }
 
