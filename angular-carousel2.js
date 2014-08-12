@@ -55,12 +55,12 @@
                                 pfxTransitionDuration = Modernizr.prefixed('transitionDuration'),
                                 pfxTransitionTimingFunction = Modernizr.prefixed('transitionTimingFunction');
 
-                            function goTo(i) {
+                            function goTo(i, preventNotify) {
                                 pageIndex = parseInt(i);
 
                                 setFramesPageId();
 
-                                flip();
+                                flip(preventNotify);
                             }
 
                             function next(speed) {
@@ -79,12 +79,12 @@
                                 flipPage('prev', speed !== undefined ? speed : defaults.speed);
                             }
 
-                            scope.$on('carousel:goTo', function(e, i, speed, id) {
+                            scope.$on('carousel:goTo', function(e, i, preventNotify, id) {
                                 if (id && defaults.id !== id) {
                                     return false;
                                 }
 
-                                goTo(i);
+                                goTo(i, preventNotify);
                             });
 
                             scope.$on('carousel:next', function(e, speed, id) {
@@ -360,7 +360,9 @@
                                 }
                             }
 
-                            function flip() {
+                            function flip(preventNotify) {
+                                preventNotify = preventNotify || false;
+
                                 for (var i = 0; i < 5; i++) {
                                     frames[i].scope[valueIdentifier] = list[frames[i].pageId];
 
@@ -377,7 +379,9 @@
 
                                 scope.currentPage = pageIndex;
 
-                                scope.$broadcast('carousel:change', pageIndex, defaults.id);
+                                if (!preventNotify) {
+                                    scope.$broadcast('carousel:change', pageIndex, defaults.id);
+                                }
                             }
 
                             if (defaults.bindSwipe) {
