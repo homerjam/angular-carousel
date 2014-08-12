@@ -146,7 +146,7 @@
                             scope.playing = false;
 
                             scope.$watch('playing', function(n, o){
-                                scope.$broadcast('carousel:status', n ? 'playing' : 'stopped', defaults.id);
+                                scope.$emit('carousel:status', n ? 'playing' : 'stopped', defaults.id);
                             });
 
                             function init() {
@@ -379,9 +379,7 @@
 
                                 scope.currentPage = pageIndex;
 
-                                if (!preventNotify) {
-                                    scope.$broadcast('carousel:change', pageIndex, defaults.id);
-                                }
+                                scope.$emit('carousel:change', pageIndex, preventNotify, defaults.id);
                             }
 
                             if (defaults.bindSwipe) {
