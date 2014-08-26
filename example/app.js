@@ -19,12 +19,13 @@ angular.module('ExampleCtrl', []).controller('ExampleCtrl', ['$scope',
         $scope.carouselOptions = {
             id: 'myCarousel',
             clickSpeed: 500,
-            keySpeed: 500
+            keySpeed: 500,
+            prevClickEnabled: true
         };
 
         $scope.carouselEmitter = function() {
             var args = Array.prototype.slice.call(arguments, 1);
-            $scope.$emit('carousel:' + arguments[0], args.length ? args : null);
+            $scope.$emit('carousel:' + arguments[0], args.length ? args : undefined);
         };
 
         $scope.$on('carousel:change', function(e, i) {
