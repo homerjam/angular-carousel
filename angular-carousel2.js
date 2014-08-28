@@ -153,7 +153,7 @@
 
                             setFramesPageId();
 
-                            _flip();
+                            $timeout(_flip);
 
                             if (defaults.autoPlay) {
                                 play();
