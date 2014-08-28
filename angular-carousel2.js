@@ -56,8 +56,8 @@
                             pfxTransitionDuration = Modernizr.prefixed('transitionDuration'),
                             pfxTransitionTimingFunction = Modernizr.prefixed('transitionTimingFunction');
 
-                        function goTo(i, speed, preventNotify) {
-                            flipPage(parseInt(i), speed, preventNotify);
+                        function goTo(i, speed, args) {
+                            flipPage(parseInt(i), speed, args);
                         }
 
                         function next(speed) {
@@ -76,12 +76,12 @@
                             flipPage('prev', speed !== undefined ? speed : defaults.speed);
                         }
 
-                        scope.$on('carousel:goTo', function(e, i, speed, preventNotify, id) {
+                        scope.$on('carousel:goTo', function(e, i, speed, args, id) {
                             if (id && defaults.id !== id) {
                                 return false;
                             }
 
-                            goTo(i, speed, preventNotify);
+                            goTo(i, speed, args);
                         });
 
                         scope.$on('carousel:next', function(e, speed, id) {
@@ -298,10 +298,11 @@
                             slider[0].style[pfxTransitionTimingFunction] = defaults.timingFunction;
                         }
 
-                        function flipPage(index, speed, preventNotify) {
+                        function flipPage(index, speed, args) {
                             speed = speed !== undefined ? speed : defaults.speed;
+                            args = args || {};
 
-                            preventNotify = preventNotify || false;
+                            preventNotify = args.preventNotify || false;
 
                             if (typeof(index) === 'number') {
                                 direction = 0;
@@ -338,10 +339,12 @@
                                 pageIndex = pageIndex === list.length - 1 ? 0 : pageIndex + 1;
                             }
 
-                            var changeEvent = scope.$emit('carousel:change', pageIndex, preventNotify, defaults.id);
+                            if (!preventNotify) {
+                                var changeEvent = scope.$emit('carousel:change', pageIndex, args, defaults.id);
 
-                            if (changeEvent.defaultPrevented) {
-                                return false;
+                                if (changeEvent.defaultPrevented) {
+                                    return false;
+                                }
                             }
 
                             if (direction === 1) {
