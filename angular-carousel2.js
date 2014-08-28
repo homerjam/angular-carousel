@@ -302,7 +302,7 @@
                             speed = speed !== undefined ? speed : defaults.speed;
                             args = args || {};
 
-                            preventNotify = args.preventNotify || false;
+                            var preventNotify = args.preventNotify || false;
 
                             if (typeof(index) === 'number') {
                                 direction = 0;
