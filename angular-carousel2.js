@@ -153,16 +153,14 @@
 
                             setFramesPageId();
 
+                            _flip();
+
                             $timeout(function() {
-                                _flip();
+                                _resize();
 
-                                $timeout(function() {
-                                    _resize();
-
-                                    if (defaults.autoPlay) {
-                                        play();
-                                    }
-                                });
+                                if (defaults.autoPlay) {
+                                    play();
+                                }
                             });
                         }
 
