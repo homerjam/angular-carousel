@@ -153,13 +153,17 @@
 
                             setFramesPageId();
 
-                            $timeout(_flip);
+                            $timeout(function() {
+                                _flip();
 
-                            if (defaults.autoPlay) {
-                                play();
-                            }
+                                $timeout(function() {
+                                    _resize();
 
-                            $timeout(_resize);
+                                    if (defaults.autoPlay) {
+                                        play();
+                                    }
+                                });
+                            });
                         }
 
                         function autoPlay() {
@@ -381,16 +385,29 @@
 
                         function _flip() {
                             for (var i = 0; i < 5; i++) {
-                                frames[i].scope[valueIdentifier] = list[frames[i].pageId];
+                                var frameScope = frames[i].scope,
+                                    idx = frames[i].pageId;
 
-                                if (!frames[i].scope.$$phase) {
-                                    frames[i].scope.$apply();
+                                frameScope[valueIdentifier] = list[idx];
+
+                                frameScope.$index = idx;
+                                frameScope.$first = idx === 0;
+                                frameScope.$middle = idx > 0 && idx < frames.length - 1;
+                                frameScope.$last = idx === frames.length - 1;
+                                frameScope.$even = !(idx % 2);
+                                frameScope.$odd = !!(idx % 2);
+
+                                if (!frameScope.$$phase) {
+                                    frameScope.$apply();
                                 }
 
                                 if (i === 2) {
                                     angular.element(frames[i].element).addClass('current');
+                                    frameScope.$current = true;
+
                                 } else {
                                     angular.element(frames[i].element).removeClass('current');
+                                    frameScope.$current = false;
                                 }
                             }
 
