@@ -2,10 +2,6 @@
 
 A carousel directive for angularjs
 
-* Api accessible via `carousel` property of scope
-* `ng-carousel-options` attribute can be used to set `speed`, `onChange` etc
-* Cross-browser compatability thanks to `Modernizr`
-
 
 ## Installation
 
@@ -20,7 +16,7 @@ http://homerjam.github.io/angular-carousel2/
 ## Example
 
 ```
-<div ng-carousel="slide in slides" ng-carousel-options="{ onChange: 'onChangeSlide', clickSpeed: 500, keySpeed: 500 }">
+<div hj-carousel="slide in slides">
 
 	<div class="slide">
 
