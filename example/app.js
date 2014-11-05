@@ -18,8 +18,8 @@ angular.module('ExampleCtrl', []).controller('ExampleCtrl', ['$scope',
 
         $scope.carouselOptions = {
             id: 'myCarousel',
-            clickSpeed: 500,
-            keySpeed: 500,
+            clickSpeed: 800,
+            keySpeed: 800,
             prevClickEnabled: true
         };
 
@@ -39,4 +39,4 @@ angular.module('ExampleCtrl', []).controller('ExampleCtrl', ['$scope',
     }
 ]);
 
-angular.module('ExampleApp', ['angular-carousel2', 'ExampleCtrl']).config(function() {});
+angular.module('ExampleApp', ['hj.carousel', 'ExampleCtrl']).config(function() {});
