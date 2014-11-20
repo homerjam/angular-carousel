@@ -415,8 +415,6 @@
                         var resize = function() {
                             setSizeVars();
 
-                            slider[0].style[pfxTransitionDuration] = '0s';
-
                             moveSlider(-page * viewportWidth);
                         };
 
@@ -447,9 +445,14 @@
 
                             $timeout.cancel(movingTimeout);
 
-                            movingTimeout = $timeout(function() {
+                            if (transDuration > 0) {
+                                movingTimeout = $timeout(function() {
+                                    moving = false;
+                                }, transDuration);
+
+                            } else {
                                 moving = false;
-                            }, transDuration);
+                            }
                         };
 
                         var flipPage = function(index, speed, args) {
@@ -576,13 +579,15 @@
                                         return false;
                                     }
 
-                                    stop();
-
-                                    moved = false;
                                     startX = coords.x;
                                     pointX = coords.x;
                                     direction = 0;
-                                    slider[0].style[pfxTransitionDuration] = '0ms';
+
+                                    stop();
+
+                                    moved = false;
+
+                                    moveSlider(-page * viewportWidth);
                                 },
 
                                 move: function(coords) {
@@ -592,10 +597,10 @@
 
                                     var deltaX = coords.x - pointX;
                                     var newX = sliderX + deltaX;
-
-                                    moved = true;
                                     pointX = coords.x;
                                     direction = deltaX > 0 ? 1 : deltaX < 0 ? -1 : 0;
+
+                                    moved = true;
 
                                     moveSlider(newX);
                                 },
@@ -614,8 +619,7 @@
                                     }
 
                                     if (dist < snapThreshold) {
-                                        slider[0].style[pfxTransitionDuration] = Math.floor(300 * dist / snapThreshold) + 'ms';
-                                        moveSlider(-page * viewportWidth);
+                                        moveSlider(-page * viewportWidth, Math.floor(300 * (dist / snapThreshold)));
 
                                     } else {
                                         flipPage('auto');
