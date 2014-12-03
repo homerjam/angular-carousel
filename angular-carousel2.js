@@ -302,6 +302,8 @@
                                 if (defaults.autoPlay) {
                                     play();
                                 }
+
+                                $scope.$emit('carousel:init', defaults.id);
                             });
                         };
 
