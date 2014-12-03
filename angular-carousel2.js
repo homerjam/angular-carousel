@@ -497,7 +497,7 @@
                             }
 
                             if (!preventNotify) {
-                                var changeEvent = $scope.$emit('carousel:change', pageIndex, args, defaults.id);
+                                var changeEvent = $scope.$emit('carousel:changeStart', pageIndex, args, defaults.id);
 
                                 if (changeEvent.defaultPrevented) {
                                     return false;
@@ -534,6 +534,10 @@
                                 setFramesScope();
 
                                 reset();
+
+                                if (!preventNotify) {
+                                    $scope.$emit('carousel:changeSuccess', pageIndex, args, defaults.id);
+                                }                                
 
                             }, transDuration);
                         };

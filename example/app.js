@@ -28,7 +28,7 @@ angular.module('ExampleCtrl', []).controller('ExampleCtrl', ['$scope',
             $scope.$emit('carousel:' + arguments[0], args.length ? args : undefined);
         };
 
-        $scope.$on('carousel:change', function(e, i) {
+        $scope.$on('carousel:changeSuccess', function(e, i) {
             $scope.activeSlideIndex = i;
         });
 
