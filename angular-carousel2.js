@@ -41,7 +41,7 @@
     angular.module('hj.carousel').directive('hjCarousel', ['$swipe', '$timeout', '$log', '$window', '$document', 'Ease',
         function($swipe, $timeout, $log, $window, $document, Ease) {
             return {
-                restrict: 'AC',
+                restrict: 'A',
                 transclude: true,
                 template: '<div class="carousel-container">' + '<div class="carousel-wrapper">' + '<div class="carousel-slider" ng-transclude></div>' + '</div>' + '</div>',
                 compile: function(tElement, tAttr, transcludeFn) {
