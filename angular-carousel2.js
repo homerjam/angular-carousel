@@ -4,117 +4,6 @@
 
     angular.module('hj.carousel', ['ngTouch']);
 
-    angular.module('hj.carousel').service('customModernizr', ['$window', function($window) {
-        /* Modernizr 2.8.3 (Custom Build) | MIT & BSD
-         * Build: http://modernizr.com/download/#-touch-prefixed-teststyles-testprop-testallprops-prefixes-domprefixes
-         */
-        return function(a, b, c) {
-            function y(a) {
-                i.cssText = a
-            }
-
-            function z(a, b) {
-                return y(l.join(a + ";") + (b || ""))
-            }
-
-            function A(a, b) {
-                return typeof a === b
-            }
-
-            function B(a, b) {
-                return !!~("" + a).indexOf(b)
-            }
-
-            function C(a, b) {
-                for (var d in a) {
-                    var e = a[d];
-                    if (!B(e, "-") && i[e] !== c) return b == "pfx" ? e : !0
-                }
-                return !1
-            }
-
-            function D(a, b, d) {
-                for (var e in a) {
-                    var f = b[a[e]];
-                    if (f !== c) return d === !1 ? a[e] : A(f, "function") ? f.bind(d || b) : f
-                }
-                return !1
-            }
-
-            function E(a, b, c) {
-                var d = a.charAt(0).toUpperCase() + a.slice(1),
-                    e = (a + " " + n.join(d + " ") + d).split(" ");
-                return A(b, "string") || A(b, "undefined") ? C(e, b) : (e = (a + " " + o.join(d + " ") + d).split(" "), D(e, b, c))
-            }
-            var d = "2.8.3",
-                e = {},
-                f = b.documentElement,
-                g = "modernizr",
-                h = b.createElement(g),
-                i = h.style,
-                j, k = {}.toString,
-                l = " -webkit- -moz- -o- -ms- ".split(" "),
-                m = "Webkit Moz O ms",
-                n = m.split(" "),
-                o = m.toLowerCase().split(" "),
-                p = {},
-                q = {},
-                r = {},
-                s = [],
-                t = s.slice,
-                u, v = function(a, c, d, e) {
-                    var h, i, j, k, l = b.createElement("div"),
-                        m = b.body,
-                        n = m || b.createElement("body");
-                    if (parseInt(d, 10))
-                        while (d--) j = b.createElement("div"), j.id = e ? e[d] : g + (d + 1), l.appendChild(j);
-                    return h = ["&#173;", '<style id="s', g, '">', a, "</style>"].join(""), l.id = g, (m ? l : n).innerHTML += h, n.appendChild(l), m || (n.style.background = "", n.style.overflow = "hidden", k = f.style.overflow, f.style.overflow = "hidden", f.appendChild(n)), i = c(l, a), m ? l.parentNode.removeChild(l) : (n.parentNode.removeChild(n), f.style.overflow = k), !!i
-                },
-                w = {}.hasOwnProperty,
-                x;
-            !A(w, "undefined") && !A(w.call, "undefined") ? x = function(a, b) {
-                return w.call(a, b)
-            } : x = function(a, b) {
-                return b in a && A(a.constructor.prototype[b], "undefined")
-            }, Function.prototype.bind || (Function.prototype.bind = function(b) {
-                var c = this;
-                if (typeof c != "function") throw new TypeError;
-                var d = t.call(arguments, 1),
-                    e = function() {
-                        if (this instanceof e) {
-                            var a = function() {};
-                            a.prototype = c.prototype;
-                            var f = new a,
-                                g = c.apply(f, d.concat(t.call(arguments)));
-                            return Object(g) === g ? g : f
-                        }
-                        return c.apply(b, d.concat(t.call(arguments)))
-                    };
-                return e
-            }), p.touch = function() {
-                var c;
-                return "ontouchstart" in a || a.DocumentTouch && b instanceof DocumentTouch ? c = !0 : v(["@media (", l.join("touch-enabled),("), g, ")", "{#modernizr{top:9px;position:absolute}}"].join(""), function(a) {
-                    c = a.offsetTop === 9
-                }), c
-            };
-            for (var F in p) x(p, F) && (u = F.toLowerCase(), e[u] = p[F](), s.push((e[u] ? "" : "no-") + u));
-            return e.addTest = function(a, b) {
-                if (typeof a == "object")
-                    for (var d in a) x(a, d) && e.addTest(d, a[d]);
-                else {
-                    a = a.toLowerCase();
-                    if (e[a] !== c) return e;
-                    b = typeof b == "function" ? b() : b, typeof enableClasses != "undefined" && enableClasses && (f.className += " " + (b ? "" : "no-") + a), e[a] = b
-                }
-                return e
-            }, y(""), h = j = null, e._version = d, e._prefixes = l, e._domPrefixes = o, e._cssomPrefixes = n, e.testProp = function(a) {
-                return C([a])
-            }, e.testAllProps = E, e.testStyles = v, e.prefixed = function(a, b, c) {
-                return b ? E(a, b, c) : E(a, "pfx")
-            }, e
-        }($window, $window.document);
-    }]);
-
     angular.module('hj.carousel').constant('Ease', {
         easeInCubic: 'cubic-bezier(0.550, 0.055, 0.675, 0.190)',
         easeOutCubic: 'cubic-bezier(0.215, 0.610, 0.355, 1.000)',
@@ -149,8 +38,8 @@
         easeInOutBack: 'cubic-bezier(0.680, -0.550, 0.265, 1.550)'
     });
 
-    angular.module('hj.carousel').directive('hjCarousel', ['$swipe', '$timeout', '$log', '$window', '$document', 'customModernizr', 'Ease',
-        function($swipe, $timeout, $log, $window, $document, customModernizr, Ease) {
+    angular.module('hj.carousel').directive('hjCarousel', ['$swipe', '$timeout', '$log', '$window', '$document', 'Ease',
+        function($swipe, $timeout, $log, $window, $document, Ease) {
             return {
                 restrict: 'AC',
                 transclude: true,
@@ -189,15 +78,26 @@
                             angular.extend(defaults, $scope.$eval($attr.hjCarouselOptions));
                         }
 
-                        var transEndEventNames = {
-                            'WebkitTransition': 'webkitTransitionEnd', // Saf 6, Android Browser
-                            'MozTransition': 'transitionend', // only for FF < 15
-                            'transition': 'transitionend' // IE10, Opera, Chrome, FF 15+, Saf 7+
+                        var getPrefix = function(prop) {
+                            var prefixes = ['Moz', 'Khtml', 'Webkit', 'O', 'ms'],
+                                elem = document.createElement('div'),
+                                upper = prop.charAt(0).toUpperCase() + prop.slice(1);
+
+                            if (prop in elem.style)
+                                return prop;
+
+                            for (var len = prefixes.length; len--;) {
+                                if ((prefixes[len] + upper) in elem.style)
+                                    return (prefixes[len] + upper);
+                            }
+
+                            return false;
                         };
 
-                        var pfxTransitionEnd = transEndEventNames[customModernizr.prefixed('transition')],
-                            pfxTransitionDuration = customModernizr.prefixed('transitionDuration'),
-                            pfxTransitionTimingFunction = customModernizr.prefixed('transitionTimingFunction');
+                        var isTouch = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch,
+                            pfxTransform = getPrefix('transform'),
+                            pfxTransitionDuration = getPrefix('transitionDuration'),
+                            pfxTransitionTimingFunction = getPrefix('transitionTimingFunction');
 
                         var goTo = function(i, speed, args) {
                             flipPage(parseInt(i), speed, args);
@@ -243,6 +143,8 @@
                             prev(speed);
                         });
 
+                        $scope.$carousel = {};
+
                         var container = $element.children(),
                             slider = container.children();
 
@@ -281,9 +183,11 @@
                             pageIndex = defaults.startIdx, // The index of that page in the array.
                             autoPlayTimeout;
 
-                        $scope.playing = false;
+                        $scope.$carousel.playing = false;
 
-                        $scope.$watch('playing', function(n, o) {
+                        $scope.$watch(function() {
+                            return $scope.$carousel.playing;
+                        }, function(n) {
                             $scope.$emit('carousel:status', n ? 'playing' : 'stopped', defaults.id);
                         });
 
@@ -316,7 +220,7 @@
                         var play = function(immediate) {
                             immediate = immediate || false;
 
-                            $scope.playing = true;
+                            $scope.$carousel.playing = true;
 
                             if (immediate) {
                                 next();
@@ -327,7 +231,7 @@
                         };
 
                         var stop = function() {
-                            $scope.playing = false;
+                            $scope.$carousel.playing = false;
 
                             $timeout.cancel(autoPlayTimeout);
                         };
@@ -339,7 +243,7 @@
 
                             immediate = immediate || false;
 
-                            if ($scope.playing) {
+                            if ($scope.$carousel.playing) {
                                 stop();
                             } else {
                                 play(immediate);
@@ -401,11 +305,11 @@
                             direction;
 
                         var setSizeVars = function() {
-                            $scope.carouselWidth = viewportWidth = container[0].clientWidth;
-                            $scope.carouselHeight = viewportHeight = container[0].clientHeight;
+                            $scope.$carousel.width = viewportWidth = container[0].clientWidth;
+                            $scope.$carousel.height = viewportHeight = container[0].clientHeight;
 
-                            $scope.slideWidth = frames[2].$element.children().length ? frames[2].$element.children()[0].clientWidth : frames[2].$element[0].clientWidth;
-                            $scope.slideHeight = frames[2].$element.children().length ? frames[2].$element.children()[0].clientHeight : frames[2].$element[0].clientHeight;
+                            $scope.$carousel.slideWidth = frames[2].$element.children().length ? frames[2].$element.children()[0].clientWidth : frames[2].$element[0].clientWidth;
+                            $scope.$carousel.slideHeight = frames[2].$element.children().length ? frames[2].$element.children()[0].clientHeight : frames[2].$element[0].clientHeight;
 
                             if (!$scope.$$phase) {
                                 $scope.$apply();
@@ -441,7 +345,7 @@
 
                             sliderX = x;
 
-                            slider[0].style[customModernizr.prefixed('transform')] = 'translate3d(' + x + 'px, 0, 0)';
+                            slider[0].style[pfxTransform] = 'translate3d(' + x + 'px, 0, 0)';
                             slider[0].style[pfxTransitionDuration] = transDuration + 'ms';
                             slider[0].style[pfxTransitionTimingFunction] = Ease[defaults.timingFunction] || defaults.timingFunction;
 
@@ -539,7 +443,7 @@
 
                                 if (!preventNotify) {
                                     $scope.$emit('carousel:changeSuccess', pageIndex, args, defaults.id);
-                                }                                
+                                }
 
                             }, transDuration);
                         };
@@ -566,7 +470,7 @@
                                     angular.element(frames[i].$element).addClass('current');
                                     frameScope.$current = true;
 
-                                    $scope.currentFrame = frames[i];
+                                    $scope.$carousel.currentFrame = frames[i];
 
                                 } else {
                                     angular.element(frames[i].$element).removeClass('current');
@@ -574,8 +478,8 @@
                                 }
                             }
 
-                            $scope.frames = frames;
-                            $scope.currentPage = pageIndex;
+                            $scope.$carousel.frames = frames;
+                            $scope.$carousel.pageIndex = pageIndex;
                         };
 
                         if (defaults.bindSwipe) {
@@ -612,7 +516,7 @@
                                 },
 
                                 end: function(coords, e) {
-                                    if (list.length < 2 || (customModernizr.touch && e.type !== 'touchend') || moving) {
+                                    if (list.length < 2 || (isTouch && e.type !== 'touchend') || moving) {
                                         return false;
                                     }
 
