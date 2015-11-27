@@ -1,4 +1,4 @@
-<html>
+<html ng-app="ExampleApp">
 
 	<head>
 
@@ -8,9 +8,9 @@
 
 	</head>
 
-	<body ng-app="ExampleApp" ng-controller="ExampleCtrl">
+	<body ng-controller="ExampleCtrl as vm">
 
-		<div hj-carousel="slide in data.slides" hj-carousel-options="carouselOptions">
+		<div hj-carousel="slide in vm.slides" hj-carousel-options="vm.carouselOptions">
 
 			<div class="slide" style="background-color: {{slide.color}}">
 
@@ -22,30 +22,30 @@
 
 		<ul class="controls">
 
-			<li ng-click="carouselEmitter('prev')">&#10094;</li>
+			<li ng-click="vm.carouselEmitter('prev')">&#10094;</li>
 
-			<li ng-repeat="slide in data.slides"
-				ng-click="carouselEmitter('goTo', $index)"
-				ng-class="{active: $index == activeSlideIndex}"
+			<li ng-repeat="slide in vm.slides"
+				ng-click="vm.carouselEmitter('goTo', $index)"
+				ng-class="{active: $index == vm.activeSlideIndex}"
 				ng-bind="{{$index + 1}}"></li>
 
-			<li ng-click="carouselEmitter('next')">&#10095;</li>
+			<li ng-click="vm.carouselEmitter('next')">&#10095;</li>
 
 		</ul>
 
 		<ul class="controls" style="bottom: 3em;">
 
-			<li ng-click="carouselEmitter('playPause', true)" ng-bind="isPlaying ? 'Pause' : 'Play'"></li>
+			<li ng-click="vm.carouselEmitter('playPause', true)" ng-bind="vm.isPlaying ? 'Pause' : 'Play'"></li>
 
-			<!-- <li ng-click="carouselEmitter('play')">Play</li> -->
+			<!-- <li ng-click="vm.carouselEmitter('play')">Play</li> -->
 
-			<!-- <li ng-click="carouselEmitter('stop')">Stop</li> -->
+			<!-- <li ng-click="vm.carouselEmitter('stop')">Stop</li> -->
 
 		</ul>
 
 		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
-		<script type="text/javascript" src="http://code.angularjs.org/1.2.8/angular.min.js"></script>
-		<script type="text/javascript" src="http://code.angularjs.org/1.2.8/angular-touch.min.js"></script>
+		<script type="text/javascript" src="http://code.angularjs.org/1.4.8/angular.min.js"></script>
+		<script type="text/javascript" src="http://code.angularjs.org/1.4.8/angular-touch.min.js"></script>
 		<script type="text/javascript" src="angular-carousel2.js"></script>
 		<script type="text/javascript" src="example/app.js"></script>
 
