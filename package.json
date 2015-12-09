@@ -1,6 +1,6 @@
 {
   "name": "angular-carousel2",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "A carousel directive for angular",
   "main": "index.js",
   "repository": {

@@ -317,10 +317,6 @@
                 $scope.$carousel.slideWidth = frames[2].$element.children().length ? frames[2].$element.children()[0].clientWidth : frames[2].$element[0].clientWidth;
                 $scope.$carousel.slideHeight = frames[2].$element.children().length ? frames[2].$element.children()[0].clientHeight : frames[2].$element[0].clientHeight;
 
-                if (!$scope.$$phase) {
-                  $scope.$apply();
-                }
-
                 snapThreshold = Math.round(viewportWidth * defaults.snapThreshold);
               };
 
@@ -328,6 +324,10 @@
                 setSizeVars();
 
                 moveSlider(-page * viewportWidth);
+
+                if (!$scope.$$phase) {
+                  $scope.$apply();
+                }
               };
 
               var reset = function () { // reset left/translate positions (improves resizing performance)
@@ -467,10 +467,6 @@
                   frameScope.$last = idx === frames.length - 1;
                   frameScope.$even = !(idx % 2);
                   frameScope.$odd = !!(idx % 2);
-
-                  if (!frameScope.$$phase) {
-                    frameScope.$apply();
-                  }
 
                   if (i === 2) {
                     angular.element(frames[i].$element).addClass('current');
