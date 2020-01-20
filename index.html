@@ -1,54 +1,57 @@
 <html ng-app="ExampleApp">
+  <head>
+    <title>angular-carousel2</title>
 
-	<head>
+    <link rel="stylesheet" type="text/css" href="example/styles.css" />
+  </head>
 
-		<title>angular-carousel2</title>
+  <body ng-controller="ExampleCtrl as vm">
+    <div
+      hj-carousel="slide in vm.slides"
+      hj-carousel-options="vm.carouselOptions"
+    >
+      <div class="slide" style="background-color: {{ slide.color }}">
+        <h1 ng-bind="slide.text"></h1>
+      </div>
+    </div>
 
-		<link rel="stylesheet" type="text/css" href="example/styles.css">
+    <ul class="controls">
+      <li ng-click="vm.carouselEmitter('prev')">&#10094;</li>
 
-	</head>
+      <li
+        ng-repeat="slide in vm.slides"
+        ng-click="vm.carouselEmitter('goTo', $index)"
+        ng-class="{active: $index == vm.activeSlideIndex}"
+        ng-bind="{{$index + 1}}"
+      ></li>
 
-	<body ng-controller="ExampleCtrl as vm">
+      <li ng-click="vm.carouselEmitter('next')">&#10095;</li>
+    </ul>
 
-		<div hj-carousel="slide in vm.slides" hj-carousel-options="vm.carouselOptions">
+    <ul class="controls" style="bottom: 3em;">
+      <li
+        ng-click="vm.carouselEmitter('playPause', true)"
+        ng-bind="vm.isPlaying ? 'Pause' : 'Play'"
+      ></li>
 
-			<div class="slide" style="background-color: {{slide.color}}">
+      <!-- <li ng-click="vm.carouselEmitter('play')">Play</li> -->
 
-				<h1 ng-bind="slide.text"></h1>
+      <!-- <li ng-click="vm.carouselEmitter('stop')">Stop</li> -->
+    </ul>
 
-			</div>
-
-		</div>
-
-		<ul class="controls">
-
-			<li ng-click="vm.carouselEmitter('prev')">&#10094;</li>
-
-			<li ng-repeat="slide in vm.slides"
-				ng-click="vm.carouselEmitter('goTo', $index)"
-				ng-class="{active: $index == vm.activeSlideIndex}"
-				ng-bind="{{$index + 1}}"></li>
-
-			<li ng-click="vm.carouselEmitter('next')">&#10095;</li>
-
-		</ul>
-
-		<ul class="controls" style="bottom: 3em;">
-
-			<li ng-click="vm.carouselEmitter('playPause', true)" ng-bind="vm.isPlaying ? 'Pause' : 'Play'"></li>
-
-			<!-- <li ng-click="vm.carouselEmitter('play')">Play</li> -->
-
-			<!-- <li ng-click="vm.carouselEmitter('stop')">Stop</li> -->
-
-		</ul>
-
-		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
-		<script type="text/javascript" src="http://code.angularjs.org/1.4.8/angular.min.js"></script>
-		<script type="text/javascript" src="http://code.angularjs.org/1.4.8/angular-touch.min.js"></script>
-		<script type="text/javascript" src="angular-carousel2.js"></script>
-		<script type="text/javascript" src="example/app.js"></script>
-
-	</body>
-
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://code.angularjs.org/1.6.10/angular.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://www.unpkg.com/hammerjs@2.0.8/hammer.min.js"
+    ></script>
+    <script type="text/javascript" src="angular-carousel2.js"></script>
+    <script type="text/javascript" src="example/app.js"></script>
+  </body>
 </html>

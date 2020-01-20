@@ -1,9 +1,9 @@
 {
-    "name": "angular-carousel2",
-    "version": "0.1.5",
-    "main": "angular-carousel2.js",
-    "dependencies": {
-        "angular": ">= 1.2.4",
-        "angular-touch": ">= 1.2.4"
-    }
+  "name": "angular-carousel2",
+  "version": "0.2.0",
+  "main": "angular-carousel2.js",
+  "dependencies": {
+    "angular": "~1.6",
+    "hammerjs": "~2.0"
+  }
 }
